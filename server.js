@@ -1,9 +1,6 @@
 import express from 'express';
 import cors from 'cors';
 
-//route here
-import uploadVideoRoute from './routers/uploadVideoRoutes.js';
-
 const app = express();
 
 const allowedOrigins = [
@@ -27,6 +24,10 @@ app.use(cors({
 
 app.use(express.json());
 app.use(express.static('public'));
+
+app.get('/', (request, response) => {
+    response.send('Hello World');
+});
 
 const port = 5000;
 
