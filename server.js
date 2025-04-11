@@ -1,5 +1,6 @@
 import express from 'express';
 import cors from 'cors';
+import { runPipeline } from './docker_services/colmapPipeline.js';
 
 const app = express();
 
@@ -25,8 +26,13 @@ app.use(cors({
 app.use(express.json());
 app.use(express.static('public'));
 
-app.get('/', (request, response) => {
-    response.send('Hello World');
+app.get('/', async (request, response) => {
+    try {
+        await runPipeline();
+        response.status(200).json({ message: 'Pipeline COLMAP successful '});
+    } catch(error) {
+        response.status(500).json({ error: 'Error loading pipeline' });
+    };
 });
 
 const port = 5000;
