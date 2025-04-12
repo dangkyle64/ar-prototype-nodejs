@@ -1,12 +1,13 @@
 import express from 'express';
 import cors from 'cors';
 import { runPipeline } from './docker_services/colmapPipeline.js';
+import { uploadVideoController } from './controllers/uploadVideoController.js';
 
 const app = express();
 
 const allowedOrigins = [
     'http://localhost:3000',
-    'https://ar-furniture-ecru.vercel.app',
+    'https://ar-prototype-nextjs.vercel.app/',
 ];
 
 app.use(cors({
@@ -26,6 +27,9 @@ app.use(cors({
 app.use(express.json());
 app.use(express.static('public'));
 
+app.use('/api/video-upload', uploadVideoController);
+
+/*
 app.get('/', async (request, response) => {
     try {
         await runPipeline();
@@ -34,7 +38,7 @@ app.get('/', async (request, response) => {
         response.status(500).json({ error: 'Error loading pipeline' });
     };
 });
-
+*/
 const port = 5000;
 
 if (process.env.NODE_ENV !== 'test') {
