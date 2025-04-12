@@ -137,8 +137,5 @@ dist
 .yarn/install-state.gz
 .pnp.*
 
-test-opencv.js 
-cattape.mp4
-frames/
 images
 colmap_output/

@@ -13,6 +13,10 @@ export const runColmap = (args = []) => {
         ...args
         ];
 
+        console.log('Resolved Image Path:', `${process.cwd()}/images`);
+        console.log('Resolved Colmap Output Path:', `${process.cwd()}/colmap_output`);
+
+        console.log('Running COLMAP with:', dockerArgs);
         const colmap = spawn('docker', dockerArgs);
 
         colmap.stdout.on('data', (data) => {

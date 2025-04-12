@@ -56,5 +56,3 @@ export const runPipeline = async () => {
     }
 };
   
-runPipeline();
-  
