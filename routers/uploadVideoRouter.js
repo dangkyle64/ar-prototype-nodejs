@@ -5,8 +5,8 @@ import { uploadVideoController } from '../controllers/uploadVideoController';
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
 
-const router = express.Router();
+const uploadVideoRouter = express.Router();
 
-router.post('/', upload.single('video'), uploadVideoController);
+uploadVideoRouter.post('/', upload.single('video'), uploadVideoController);
 
-export default router;
+export default uploadVideoRouter;

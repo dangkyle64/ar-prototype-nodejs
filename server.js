@@ -1,7 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 import { runPipeline } from './docker_services/colmapPipeline.js';
-import { uploadVideoController } from './controllers/uploadVideoController.js';
+import uploadVideoRouter from './routers/uploadVideoRouter.js';
 
 const app = express();
 
@@ -27,7 +27,7 @@ app.use(cors({
 app.use(express.json());
 app.use(express.static('public'));
 
-app.use('/api/video-upload', uploadVideoController);
+app.use('/api/video-upload', uploadVideoRouter);
 
 /*
 app.get('/', async (request, response) => {
