@@ -15,9 +15,9 @@ export const processVideo = async (buffer, mimetype) => {
         const outputPath = './temp_video_output';
 
         if (mimetype === 'video/webm') {
-            
+            console.log('webm file converting', buffer);
             await convertWebmToMp4(buffer, outputPath);
-            console.log('webm file converted.');
+            console.log('webm file converted.', outputPath);
         } else {
             console.log('mp4 file');
         };
