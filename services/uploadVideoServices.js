@@ -1,3 +1,5 @@
+import { convertWebmToMp4 } from "./uploadVideoServicesUtils.js";
+
 export const processVideo = async (buffer, mimetype) => {
     try {
         console.log({
@@ -10,12 +12,16 @@ export const processVideo = async (buffer, mimetype) => {
             throw new Error('Unsupported mimetype');
         };
 
+        const outputPath = './temp_video_output/output.mp4';
+
         if (mimetype === 'video/webm') {
-            console.log('webm file');
+            
+            await convertWebmToMp4(buffer, outputPath);
+            console.log('webm file converted.');
         } else {
             console.log('mp4 file');
         };
-        
+
     } catch(error) {
         console.error({
             error: 'Error processing video',
