@@ -1,4 +1,4 @@
-import { processVideo } from "../services/uploadVideoServices";
+import { processVideo } from "../services/uploadVideoServices.js";
 
 export const uploadVideoController = async (request, response) => {
 
