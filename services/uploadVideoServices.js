@@ -5,6 +5,11 @@ export const processVideo = async (buffer, mimetype) => {
             size: buffer.length,
             message: 'Video processed in-memory',
         });
+
+        if (!['video/webm', 'video/mp4'].includes(mimetype)) {
+            throw new Error('Unsupported mimetype');
+        };
+
     } catch(error) {
         console.error({
             error: 'Error processing video',
