@@ -12,7 +12,7 @@ export const processVideo = async (buffer, mimetype) => {
             throw new Error('Unsupported mimetype');
         };
 
-        const outputPath = './temp_video_output/output.mp4';
+        const outputPath = './temp_video_output';
 
         if (mimetype === 'video/webm') {
             
@@ -23,6 +23,7 @@ export const processVideo = async (buffer, mimetype) => {
         };
 
     } catch(error) {
+        console.log(error);
         console.error({
             error: 'Error processing video',
         });
