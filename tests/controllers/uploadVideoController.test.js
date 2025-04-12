@@ -68,7 +68,7 @@ describe('uploadVideoController', () => {
         });
     });
 
-     it('should return error message when an invalid file type is uploaded', async () => {
+    it('should return error message when an invalid file type is uploaded', async () => {
         const request = {
             file: { buffer: Buffer.from('mock text content'), mimetype: 'text/plain' }
         };

@@ -13,9 +13,9 @@ export const uploadVideoController = async (request, response) => {
     };
 
     try {
-        const videoBuffer = request.file.buffer;
+        const { buffer, mimetype } = request.file;
 
-        const result = await processVideo(videoBuffer);
+        const result = await processVideo(buffer, mimetype);
 
         response.status(200).json({
             message: 'Video processed successfully',

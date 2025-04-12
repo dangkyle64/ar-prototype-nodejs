@@ -1,7 +1,8 @@
-export const processVideo = async (videoBuffer) => {
+export const processVideo = async (buffer, mimetype) => {
     try {
         console.log({
-            size: videoBuffer.length,
+            mimetype: mimetype,
+            size: buffer.length,
             message: 'Video processed in-memory',
         });
     } catch(error) {
