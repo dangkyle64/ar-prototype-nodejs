@@ -21,6 +21,7 @@ export const processVideo = async (buffer, mimetype) => {
         };
 
         const outputDir = './services/temp_video_output/';
+        fs.mkdirSync(outputDir, { recursive: true });
         const filename = `video_${Date.now()}`;
         const outputPath = generateOutputPath(outputDir, filename);
 
