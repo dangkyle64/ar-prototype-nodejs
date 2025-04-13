@@ -1,6 +1,6 @@
 import fs from 'fs';
 import path from 'path';
-import { convertWebmToMp4, generateOutputPath } from "./uploadVideoServicesUtils.js";
+import { convertWebmToMp4, generateOutputPath, isValidVideo } from "./uploadVideoServicesUtils.js";
 
 export const processVideo = async (buffer, mimetype) => {
     try {
@@ -20,17 +20,23 @@ export const processVideo = async (buffer, mimetype) => {
         const filename = `video_${Date.now()}`;
         const outputPath = generateOutputPath(outputDir, filename);
 
+        if (!(await isValidVideo(buffer))) {
+            throw new Error('Invalid video buffer');
+        };
+
         if (mimetype === 'video/mp4') {
             console.log('MP4 file — no conversion needed');
             fs.writeFileSync(outputPath, buffer); 
+
         } else if (mimetype === 'video/webm') {
             console.log('Converting .webm to .mp4...');
             await convertWebmToMp4(buffer, outputPath); 
             console.log('Conversion done. Output path:', path.resolve(outputPath));
+
         } else {
             console.error('Unsupported mimetype:', mimetype); 
             throw new Error('Unsupported mimetype');
-        }        
+        };        
     } catch(error) {
         console.error('Process video error:', error.message || error);
         throw error; 

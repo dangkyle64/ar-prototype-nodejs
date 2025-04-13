@@ -1,8 +1,10 @@
 import path from 'path';
+import fs from 'fs';
 
 import { describe, it, vi, beforeEach, expect } from 'vitest';
 import { processVideo } from '../../services/uploadVideoServices.js';
 import { generateOutputPath } from '../../services/uploadVideoServicesUtils.js';
+import * as utils from '../../services/uploadVideoServicesUtils.js';
 
 describe('processVideo', () => {
     let consoleLog;
@@ -15,6 +17,9 @@ describe('processVideo', () => {
     });
 
     it('should log success for supported mimetype video/mp4', async () => {
+        vi.spyOn(fs, 'writeFileSync').mockImplementation(() => {});
+        vi.spyOn(utils, 'isValidVideo').mockResolvedValue(true);
+
         await processVideo(dummyBuffer, 'video/mp4');
 
         expect(consoleLog).toHaveBeenCalledWith(
@@ -24,7 +29,10 @@ describe('processVideo', () => {
                 message: 'Video processed in-memory',
             })
         );
+        expect(fs.writeFileSync).toHaveBeenCalled();
         expect(consoleError).not.toHaveBeenCalled();
+
+        fs.writeFileSync.mockRestore();
     });
 
     it('should log success for supported mimetype video/webm', async () => {

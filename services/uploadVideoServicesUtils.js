@@ -1,10 +1,12 @@
 import ffmpeg from 'fluent-ffmpeg';
 import ffmpegPath from 'ffmpeg-static';
+import ffprobePath from 'ffprobe-static';
 import { Readable } from 'stream';
 import path from 'path';
 
 // using static version of ffmpeg since fluent is just a wrapper
 ffmpeg.setFfmpegPath(ffmpegPath);
+ffmpeg.setFfprobePath(ffprobePath.path);
 
 export const convertWebmToMp4 = (buffer, outputPath) => {
     return new Promise((resolve, reject) => {
@@ -26,4 +28,22 @@ export const convertWebmToMp4 = (buffer, outputPath) => {
 
 export const generateOutputPath = (outputDir, filename) => {
     return path.join(outputDir, `${filename}.mp4`);
+};
+
+export const isValidVideo = (buffer) => {
+    return new Promise((resolve) => {
+        const stream = new Readable();
+        stream.push(buffer);
+        stream.push(null);
+
+        ffmpeg(stream).ffprobe((err, data) => {
+            if (err) {
+                console.error('Invalid video:', err.message);
+                return resolve(false);
+            };
+
+            const hasStreams = data && data.streams && data.streams.length > 0;
+            resolve(hasStreams);
+        });
+    });
 };

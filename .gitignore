@@ -139,3 +139,4 @@ dist
 
 images
 colmap_output/
+temp_video_output/
