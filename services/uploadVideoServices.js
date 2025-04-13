@@ -23,7 +23,7 @@ export const processVideo = async (buffer, mimetype) => {
         if (mimetype === 'video/webm') {
             console.log('Converting .webm to .mp4...');
             await convertWebmToMp4(buffer, outputPath);
-            console.log('Conversion done. Output path:', outputPath);
+            console.log('Conversion done. Output path:', path.resolve(outputPath));
         } else {
             console.log('MP4 file — no conversion needed');
             fs.writeFileSync(outputPath, buffer);
