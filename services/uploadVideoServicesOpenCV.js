@@ -11,7 +11,12 @@ export const getVideoFrames = (tempMP4File) => {
 
         const cap = new cv.VideoCapture(tempMP4File, cv.CAP_FFMPEG);
 
-        const frame = videoCapture.read();
+        if (!cap.isOpened()) {
+            console.error('Error: Video file could not be opened');
+            return;
+        }
+        
+        const frame = cap.read();
 
         if (frame.empty) {
             throw new Error('Failed to read frame from video');
