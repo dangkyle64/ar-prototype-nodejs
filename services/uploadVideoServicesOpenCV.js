@@ -1,8 +1,15 @@
 import cv from 'opencv4nodejs-prebuilt-install';
+import fs from 'fs';
 
 export const getVideoFrames = (tempMP4File) => {
     try {
-        const videoCapture = new cv.VideoCapture(tempMP4File);
+
+        if (!fs.existsSync(tempMP4File)) {
+            console.error('File not found:', tempMP4File);
+            throw new Error('MP4 file not found after conversion');
+        };
+
+        const cap = new cv.VideoCapture(tempMP4File, cv.CAP_FFMPEG);
 
         const frame = videoCapture.read();
 
