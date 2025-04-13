@@ -19,6 +19,7 @@ describe('processVideo', () => {
     it('should log success for supported mimetype video/mp4', async () => {
         vi.spyOn(fs, 'writeFileSync').mockImplementation(() => {});
         vi.spyOn(utils, 'isValidVideo').mockResolvedValue(true);
+        vi.spyOn(utils, 'convertWebmToMp4').mockResolvedValue('mocked/output/path.mp4');
 
         await processVideo(dummyBuffer, 'video/mp4');
 

@@ -26,10 +26,6 @@ export const convertWebmToMp4 = (buffer, outputPath) => {
     });
 };
 
-export const generateOutputPath = (outputDir, filename) => {
-    return path.join(outputDir, `${filename}.mp4`);
-};
-
 export const isValidVideo = (buffer) => {
     return new Promise((resolve) => {
         const stream = new Readable();
@@ -47,3 +43,8 @@ export const isValidVideo = (buffer) => {
         });
     });
 };
+
+export const generateOutputPath = (outputDir, filename) => {
+    return path.join(outputDir, `${filename}.mp4`);
+};
+
