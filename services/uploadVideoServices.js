@@ -1,3 +1,5 @@
+import fs from 'fs';
+import path from 'path';
 import { convertWebmToMp4 } from "./uploadVideoServicesUtils.js";
 
 export const processVideo = async (buffer, mimetype) => {
@@ -12,7 +14,11 @@ export const processVideo = async (buffer, mimetype) => {
             throw new Error('Unsupported mimetype');
         };
 
-        const outputPath = './services/temp_video_output/';
+        const outputDir = './services/temp_video_output/';
+        fs.mkdirSync(outputDir, { recursive: true });
+
+        const filename = `video_${Date.now()}`;
+        const outputPath = path.join(outputDir, `${filename}.mp4`);
 
         if (mimetype === 'video/webm') {
             console.log('Converting .webm to .mp4...');
