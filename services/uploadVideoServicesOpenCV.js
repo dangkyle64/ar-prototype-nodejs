@@ -10,6 +10,9 @@ export const getVideoFrames = (tempMP4File) => {
             throw new Error('MP4 file not found after conversion');
         };
 
+        const stats = fs.statSync(tempMP4File);
+        console.log('MP4 file size (bytes):', stats.size);
+
         console.log('Current path being used is: ', tempMP4File);
         const cap = new cv.VideoCapture(tempMP4File, cv.CAP_FFMPEG);
 
