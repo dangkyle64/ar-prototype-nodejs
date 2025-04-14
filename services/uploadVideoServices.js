@@ -39,7 +39,7 @@ export const processVideo = async (buffer, mimetype) => {
             throw new Error('Unsupported mimetype');
         };
         
-        getVideoFrames(outputPath);
+        getVideoFrames(path.resolve(outputPath));
 
     } catch(error) {
         console.error('Process video error:', error.message || error);
