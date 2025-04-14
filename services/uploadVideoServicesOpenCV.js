@@ -10,7 +10,8 @@ export const getVideoFrames = (tempMP4File) => {
             throw new Error('MP4 file not found after conversion');
         };
 
-        const cap = new cv.VideoCapture(tempMP4File, cv.CAP_FFMPEG);
+        console.log('Current path being used is: ', tempMP4File);
+        const cap = new cv.VideoCapture(tempMP4File);
 
         const outputDir = './frames_output/';
         fs.mkdirSync(outputDir, { recursive: true });
