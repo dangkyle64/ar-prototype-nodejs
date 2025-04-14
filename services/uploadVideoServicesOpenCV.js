@@ -5,6 +5,8 @@ import path from 'path';
 export const getVideoFrames = (tempMP4File) => {
     try {
 
+        console.log(cv.getBuildInformation?.());
+        
         if (!fs.existsSync(tempMP4File)) {
             console.error('File not found:', tempMP4File);
             throw new Error('MP4 file not found after conversion');
