@@ -3,6 +3,8 @@ import ffmpegPath from 'ffmpeg-static';
 import ffprobePath from 'ffprobe-static';
 import { Readable } from 'stream';
 import path from 'path';
+import fs from 'fs';
+import { rm } from 'fs/promises';
 
 // using static version of ffmpeg since fluent is just a wrapper
 ffmpeg.setFfmpegPath(ffmpegPath);
@@ -48,3 +50,19 @@ export const generateOutputPath = (outputDir, filename) => {
     return path.join(outputDir, `${filename}.mp4`);
 };
 
+const deleteOldFrames = async () => {
+    const framesDir = path.resolve('./frames_output');
+
+    try {
+        await rm(framesDir, { recursive: true });
+        console.log('Frames folder deleted');
+    } catch(error) {
+        console.error('Failed to delete frames folder: ', error);
+    };
+};
+
+const outputPath = './temp_video_output.mp4';
+const inputPath = 'services/temp_video_output/planet.webm';
+
+//const buffer = fs.readFileSync(inputPath);
+//convertWebmToMp4(buffer, outputPath);

@@ -35,12 +35,12 @@ export const getVideoFrames = (tempMP4File) => {
 
             frameCount++;
         };
-        
+
     } catch(error) {
         console.error('Error getting frames from video: ', error);
         return;
     };
 };
 
-const pathToVideo = 'services/temp_video_output/planet.mp4'
-getVideoFrames(pathToVideo);
+//const pathToVideo = 'services/temp_video_output/planet.mp4'
+//getVideoFrames(pathToVideo);
