@@ -1,7 +1,7 @@
 import fs from 'fs';
 import path from 'path';
-import { convertWebmToMp4, generateOutputPath, isValidVideo } from "./uploadVideoServicesUtils.js";
-import { getVideoFrames } from './uploadVideoServicesOpenCV.js';
+import { generateOutputPath, isValidVideo } from "./uploadVideoServicesUtils.js";
+import { extractFramesFromWebm } from './uploadVideoServicesFFMPEG.js';
 
 export const processVideo = async (buffer, mimetype) => {
     try {

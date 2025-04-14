@@ -3,7 +3,7 @@ import ffmpegPath from 'ffmpeg-static';
 import path from 'path';
 import fs from 'fs';
 
-function extractFramesFromWebm(webmPath, outputDir, options = {}) {
+export const extractFramesFromWebm = (webmPath, outputDir, options = {}) => {
   const {
     fps = null,
     frameStep = null     
