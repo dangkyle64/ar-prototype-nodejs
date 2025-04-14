@@ -31,7 +31,7 @@ export const processVideo = async (buffer, mimetype) => {
 
         } else if (mimetype === 'video/webm') {
             console.log('Converting .webm to .mp4...');
-            await convertWebmToMp4(buffer, outputPath); 
+            fs.writeFileSync(outputPath, buffer); 
             console.log('Conversion done. Output path:', path.resolve(outputPath));
 
         } else {
@@ -39,7 +39,11 @@ export const processVideo = async (buffer, mimetype) => {
             throw new Error('Unsupported mimetype');
         };
         
-        getVideoFrames(path.resolve(outputPath));
+        await extractFramesFromWebm(
+            path.resolve(outputPath),
+            './frames_output',
+            { frameStep: 15},
+        );
 
     } catch(error) {
         console.error('Process video error:', error.message || error);
