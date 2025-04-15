@@ -35,7 +35,7 @@ export const extractFramesFromWebm = (webmPath, outputDir, options = {}) => {
                 resolve();
             })
             .on('error', err => {
-                console.error('❌ FFmpeg error:', err.message);
+                console.error('FFmpeg error:', err.message);
                 reject(err);
             })
             .run();
