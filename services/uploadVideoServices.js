@@ -1,7 +1,9 @@
 import fs from 'fs';
 import path from 'path';
-import { generateOutputPath, isValidVideo } from "./uploadVideoServicesUtils.js";
+
 import { extractFramesFromWebm } from './uploadVideoServicesFFMPEG.js';
+import { generateOutputPath } from './services_utils/getOutputPath.js';
+import { isValidVideo } from './services_utils/ffmpegFunctions.js';
 
 export const processVideo = async (buffer, mimetype) => {
     try {

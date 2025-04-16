@@ -1,25 +1,31 @@
-import path from 'path';
 import fs from 'fs';
 
 import { describe, it, vi, beforeEach, expect } from 'vitest';
 import { processVideo } from '../../services/uploadVideoServices.js';
-import { generateOutputPath } from '../../services/uploadVideoServicesUtils.js';
-import * as utils from '../../services/uploadVideoServicesUtils.js';
+
+import * as ffmpegFunctions from '../../services/services_utils/ffmpegFunctions.js';
+import * as generateOutputPathFunctions from '../../services/services_utils/getOutputPath.js';
+import * as uploadVideoServicesFFMPEGFunctions from '../../services/uploadVideoServicesFFMPEG.js';
 
 describe('processVideo', () => {
     let consoleLog;
     let consoleError;
-    const dummyBuffer = Buffer.alloc(1024); // 1KB dummy buffer
+    const dummyBuffer = Buffer.alloc(1024);
 
     beforeEach(() => {
         consoleLog = vi.spyOn(console, 'log').mockImplementation(() => {});
         consoleError = vi.spyOn(console, 'error').mockImplementation(() => {});
+
+        vi.spyOn(fs, 'mkdirSync').mockImplementation(() => {});
+        vi.spyOn(fs, 'writeFileSync').mockImplementation(() => {});
+        vi.spyOn(fs, 'readFileSync').mockImplementation(() => {});
+
+        vi.spyOn(ffmpegFunctions, 'isValidVideo').mockResolvedValue(true);
+        vi.spyOn(generateOutputPathFunctions, 'generateOutputPath').mockReturnValue('mocked/output/path.mp4');
+        vi.spyOn(uploadVideoServicesFFMPEGFunctions, 'extractFramesFromWebm').mockResolvedValue(undefined);
     });
 
     it('should log success for supported mimetype video/mp4', async () => {
-        vi.spyOn(fs, 'writeFileSync').mockImplementation(() => {});
-        vi.spyOn(utils, 'isValidVideo').mockResolvedValue(true);
-        vi.spyOn(utils, 'convertWebmToMp4').mockResolvedValue('mocked/output/path.mp4');
 
         await processVideo(dummyBuffer, 'video/mp4');
 
@@ -30,13 +36,17 @@ describe('processVideo', () => {
                 message: 'Video processed in-memory',
             })
         );
-        expect(fs.writeFileSync).toHaveBeenCalled();
+
+        expect(fs.writeFileSync).toHaveBeenCalledWith('mocked/output/path.mp4', dummyBuffer);
         expect(consoleError).not.toHaveBeenCalled();
 
         fs.writeFileSync.mockRestore();
+        fs.mkdirSync.mockRestore();
+        fs.readFileSync.mockRestore();
     });
 
     it('should log success for supported mimetype video/webm', async () => {
+
         await processVideo(dummyBuffer, 'video/webm');
 
         expect(consoleLog).toHaveBeenCalledWith(
@@ -55,67 +65,5 @@ describe('processVideo', () => {
         expect(consoleError).toHaveBeenCalledWith(
             'Unsupported mimetype'
         );
-    });
-});
-
-describe('generateOutputPath', () => {
-    it('should generate the correct output path with valid directory and filename', () => {
-        const outputDir = './services/temp_video_output';
-        const filename = 'video_123';
-        const expectedPath = path.join(outputDir, 'video_123.mp4');
-        
-        const result = generateOutputPath(outputDir, filename);
-        
-        expect(result).toBe(expectedPath);
-    });
-
-    it('should handle an empty directory correctly', () => {
-        const outputDir = '';
-        const filename = 'video_123';
-        const expectedPath = path.join('', 'video_123.mp4');
-        
-        const result = generateOutputPath(outputDir, filename);
-        
-        expect(result).toBe(expectedPath);
-    });
-
-    it('should handle special characters in the filename', () => {
-        const outputDir = './services/temp_video_output';
-        const filename = 'video_@123#&$';
-        const expectedPath = path.join(outputDir, 'video_@123#&$.mp4');
-        
-        const result = generateOutputPath(outputDir, filename);
-        
-        expect(result).toBe(expectedPath);
-    });
-
-    it('should handle spaces in the filename correctly', () => {
-        const outputDir = './services/temp_video_output';
-        const filename = 'video with spaces';
-        const expectedPath = path.join(outputDir, 'video with spaces.mp4');
-        
-        const result = generateOutputPath(outputDir, filename);
-        
-        expect(result).toBe(expectedPath);
-    });
-
-    it('should normalize paths with different slashes (e.g., / vs \\)', () => {
-        const outputDir = './services\\temp_video_output';
-        const filename = 'video_123';
-        const expectedPath = path.join('./services/temp_video_output', 'video_123.mp4');
-        
-        const result = generateOutputPath(outputDir, filename);
-        
-        expect(result).toBe(expectedPath);
-    });
-
-    it('should handle relative paths correctly', () => {
-        const outputDir = 'services/temp_video_output';
-        const filename = 'video_123';
-        const expectedPath = path.join('services/temp_video_output', 'video_123.mp4');
-        
-        const result = generateOutputPath(outputDir, filename);
-        
-        expect(result).toBe(expectedPath);
     });
 });
