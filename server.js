@@ -1,14 +1,14 @@
 import express from 'express';
 import cors from 'cors';
-import { runPipeline } from './docker_services/colmapPipeline.js';
 import uploadVideoRouter from './routers/uploadVideoRouter.js';
 
 const app = express();
 
-const allowedOrigins = [
-    'http://localhost:3000',
-    'https://ar-prototype-nextjs.vercel.app',
-];
+let allowedOrigins = [];
+
+if (process.env.ALLOWED_ORIGINS) {
+    allowedOrigins = process.env.ALLOWED_ORIGINS.split(',');
+};
 
 app.use(cors({
     origin: function (origin, callback) {
@@ -39,9 +39,9 @@ app.get('/', async (request, response) => {
     };
 });
 */
-const port = 5000;
+const port = process.env.PORT || 5000;
 
-if (process.env.NODE_ENV !== 'test') {
+if (process.env.NODE_ENV !== 'production') {
     app.listen(port, () => {
         console.log(`Server is running on http://localhost:${port}`);
     });
