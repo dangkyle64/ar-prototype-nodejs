@@ -2,8 +2,24 @@ import fs from 'fs';
 import path from 'path';
 import archiver from 'archiver';
 
-const handleOutputErrors = (reject) => (error) => {
-    reject(new Error(`File write error: ${error.message}`));
+export const handleOutputErrors = (reject) => (error) => {
+
+    if (typeof reject !== 'function') {
+        throw new Error('Reject is not a function');
+    };
+
+    if (!error) {
+        throw new Error('No error provided');
+    };
+
+    let errorMessage;
+    if (error && error.message) {
+        errorMessage = error.message;
+    } else {
+        errorMessage = 'Unknown error';
+    };
+
+    reject(new Error(`File write error: ${errorMessage}`));
 };
 
 const handleArchiveError = (reject) => (error) => {
