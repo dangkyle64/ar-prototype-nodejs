@@ -4,6 +4,7 @@ import path from 'path';
 import { extractFramesFromWebm } from './uploadVideoServicesFFMPEG.js';
 import { generateOutputPath } from './services_utils/getOutputPath.js';
 import { isValidVideo } from './services_utils/ffmpegFunctions.js';
+import { zipImageDirectory } from './services_utils/zipImageDirectory.js';
 
 export const processVideo = async (buffer, mimetype) => {
     try {
@@ -46,6 +47,8 @@ export const processVideo = async (buffer, mimetype) => {
             './frames_output',
             { frameStep: 15},
         );
+
+        await zipImageDirectory('./frames_output', './zipped_frames/frames.zip');
 
     } catch(error) {
         console.error('Process video error:', error.message || error);
