@@ -44,11 +44,14 @@ export const processVideo = async (buffer, mimetype) => {
         
         await extractFramesFromWebm(
             path.resolve(outputPath),
-            './frames_output',
+            path.resolve('./frames_output'),
             { frameStep: 15},
         );
 
-        await zipImageDirectory('./frames_output', './zipped_frames/frames.zip');
+        await zipImageDirectory(
+            path.resolve('./frames_output'),
+            path.resolve('./zipped_frames/frames.zip')
+        );
 
     } catch(error) {
         console.error('Process video error:', error.message || error);
