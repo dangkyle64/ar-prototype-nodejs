@@ -44,11 +44,11 @@ export const zipImageDirectory = (sourceDir, outputPath) => {
         output.on('error', handleOutputErrors(reject));
 
         output.on('close', () => {
-            console.log(`ZIP complete: ${archiver.pointer()} bytes`);
+            console.log(`ZIP complete.`);
             resolve();
         });
 
-        createZipArchive(sourceDir, reject, output)
+        createZipArchive(sourceDir, reject, output);
 
     });
 };
