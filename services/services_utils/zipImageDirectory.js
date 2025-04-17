@@ -5,6 +5,10 @@ import archiver from 'archiver';
 export const zipImageDirectory = (sourceDir, outPath) => {
     return new Promise((resolve, reject) => {
 
+        if (!fs.existsSync(sourceDir)) {
+            return reject(new Error(`Source directory does not exist: ${sourceDir}`));
+        };
+        
         const zipDir = path.dirname(outPath);
         fs.mkdirSync(zipDir, { recursive: true });
 

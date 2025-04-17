@@ -6,7 +6,7 @@ import { processVideo } from '../../services/uploadVideoServices.js';
 import * as ffmpegFunctions from '../../services/services_utils/ffmpegFunctions.js';
 import * as generateOutputPathFunctions from '../../services/services_utils/getOutputPath.js';
 import * as uploadVideoServicesFFMPEGFunctions from '../../services/uploadVideoServicesFFMPEG.js';
-
+import * as zipImageDirectoryFunctions from '../../services/services_utils/zipImageDirectory.js';
 describe('processVideo', () => {
     let consoleLog;
     let consoleError;
@@ -23,6 +23,7 @@ describe('processVideo', () => {
         vi.spyOn(ffmpegFunctions, 'isValidVideo').mockResolvedValue(true);
         vi.spyOn(generateOutputPathFunctions, 'generateOutputPath').mockReturnValue('mocked/output/path.mp4');
         vi.spyOn(uploadVideoServicesFFMPEGFunctions, 'extractFramesFromWebm').mockResolvedValue(undefined);
+        vi.spyOn(zipImageDirectoryFunctions, 'zipImageDirectory').mockResolvedValue(undefined);
     });
 
     it('should log success for supported mimetype video/mp4', async () => {
