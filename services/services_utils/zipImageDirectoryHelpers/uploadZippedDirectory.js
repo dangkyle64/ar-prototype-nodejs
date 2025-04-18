@@ -1,14 +1,15 @@
 import fs from 'fs';
 import axios from 'axios';
+import FormData from 'form-data';
 
 export const uploadZippedDirectory = async (zipPath, apiUrl) => {
-    const fileStream = fs.createReadStream(zipPath);
+    const form = new FormData();
+    form.append('zip', fs.createReadStream(zipPath));
 
     try {
-        const response = await axios.post(apiUrl, fileStream, {
+        const response = await axios.post(apiUrl, form, {
         headers: {
-            'Content-Type': 'application/zip',
-            'Content-Length': fs.statSync(zipPath).size,
+            ...form.getHeaders(),
         },
         maxContentLength: Infinity,
         maxBodyLength: Infinity,
