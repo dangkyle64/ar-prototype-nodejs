@@ -1,20 +1,21 @@
 import fs from 'fs';
-import fetch from 'node-fetch';
+import axios from 'axios';
 
 export const uploadZippedDirectory = async (zipPath, apiUrl) => {
     const fileStream = fs.createReadStream(zipPath);
 
-    const response = await fetch(apiUrl, {
-        method: 'POST',
+    try {
+        const response = await axios.post(apiUrl, fileStream, {
         headers: {
-        'Content-Type': 'application/zip',
+            'Content-Type': 'application/zip',
+            'Content-Length': fs.statSync(zipPath).size,
         },
-        body: fileStream
-    });
+        maxContentLength: Infinity,
+        maxBodyLength: Infinity,
+        });
 
-    if (!response.ok) {
-        throw new Error(`Failed to upload zip: ${response.statusText}`);
-    }
-
-    return response.json();
+        return response.data;
+    } catch (error) {
+        throw new Error(`Failed to upload zip: ${error.response?.statusText || error.message}`);
+    };
 };
