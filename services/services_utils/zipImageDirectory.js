@@ -5,7 +5,7 @@ import archiver from 'archiver';
 export const handleOutputErrors = (reject) => (error) => {
 
     if (typeof reject !== 'function') {
-        throw new Error('Reject is not a function');
+        throw new Error('reject is not a function');
     };
 
     if (!error) {
@@ -22,8 +22,24 @@ export const handleOutputErrors = (reject) => (error) => {
     reject(new Error(`File write error: ${errorMessage}`));
 };
 
-const handleArchiveError = (reject) => (error) => {
-    reject(new Error(`Archiver error: ${error.message}`));
+export const handleArchiveError = (reject) => (error) => {
+
+    if (typeof reject !== 'function') {
+        throw new Error('reject is not a function');
+    };
+
+    if (!error) {
+        throw new Error('No error provided');
+    };
+
+    let errorMessage;
+    if (error && error.message || error.message === '') {
+        errorMessage = error.message;
+    } else {
+        errorMessage = 'Unknown archiver error';
+    };
+
+    reject(new Error(`Archiver error: ${errorMessage}`));
 };
 
 const createOutputStream = (outputPath, reject) => {
@@ -31,7 +47,7 @@ const createOutputStream = (outputPath, reject) => {
     try {
         output = fs.createWriteStream(outputPath);
     } catch(error) {
-        return reject(newError(`Failed to create write stream: ${error.message}`));
+        return reject(new Error(`Failed to create write stream: ${error.message}`));
     };
     return output;
 };
