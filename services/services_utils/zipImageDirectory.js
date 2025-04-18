@@ -42,7 +42,7 @@ export const handleArchiveError = (reject) => (error) => {
     reject(new Error(`Archiver error: ${errorMessage}`));
 };
 
-const createOutputStream = (outputPath, reject) => {
+export const createOutputStream = (outputPath, reject) => {
     let output;
     try {
         output = fs.createWriteStream(outputPath);
