@@ -2,6 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import archiver from 'archiver';
 import { handleArchiveError } from './zipImageDirectoryHelpers/handleArchiveErrors.js';
+import { uploadZippedDirectory } from './zipImageDirectoryHelpers/uploadZippedDirectory.js';
 
 export const handleOutputErrors = (reject) => (error) => {
 
@@ -57,11 +58,19 @@ export const zipImageDirectory = (sourceDir, outputPath) => {
         output.on('error', handleOutputErrors(reject));
 
         output.on('close', () => {
+
+            const apiUrl = 'https://api.example.com/upload'; // TEMPORARY
+
             console.log(`ZIP complete.`);
-            resolve();
+            uploadZippedDirectory(outputPath, apiUrl)
+            .then((res) => {
+                resolve(res);
+            })
+            .catch((err) => {
+                reject(new Error(`Upload failed: ${err.message}`));
+            });
         });
 
         createZipArchive(sourceDir, reject, output);
-
     });
 };
