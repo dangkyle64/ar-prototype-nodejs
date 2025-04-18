@@ -52,7 +52,7 @@ export const createOutputStream = (outputPath, reject) => {
     return output;
 };
 
-const createZipArchive = (sourceDir, reject, output) => {
+export const createZipArchive = (sourceDir, reject, output) => {
     const archive = archiver('zip', { zlib: { level: 9 } });
 
     archive.pipe(output);
