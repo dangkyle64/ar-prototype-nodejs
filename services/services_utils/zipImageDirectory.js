@@ -1,6 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import archiver from 'archiver';
+import { handleArchiveError } from './zipImageDirectoryHelpers/handleArchiveErrors.js';
 
 export const handleOutputErrors = (reject) => (error) => {
 
@@ -20,26 +21,6 @@ export const handleOutputErrors = (reject) => (error) => {
     };
 
     reject(new Error(`File write error: ${errorMessage}`));
-};
-
-export const handleArchiveError = (reject) => (error) => {
-
-    if (typeof reject !== 'function') {
-        throw new Error('reject is not a function');
-    };
-
-    if (!error) {
-        throw new Error('No error provided');
-    };
-
-    let errorMessage;
-    if (error && error.message || error.message === '') {
-        errorMessage = error.message;
-    } else {
-        errorMessage = 'Unknown archiver error';
-    };
-
-    reject(new Error(`Archiver error: ${errorMessage}`));
 };
 
 export const createOutputStream = (outputPath, reject) => {

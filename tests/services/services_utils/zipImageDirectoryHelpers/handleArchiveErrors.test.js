@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from 'vitest';
-import { handleArchiveError } from "../../../../services/services_utils/zipImageDirectory";
+import { handleArchiveError } from '../../../../services/services_utils/zipImageDirectoryHelpers/handleArchiveErrors.js';
 
 describe('handleArchiveError', () => {
 
@@ -14,7 +14,7 @@ describe('handleArchiveError', () => {
     });
 
     it('should throw an error if reject is not a function', () => {
-        const reject = undefined; // reject is not a function
+        const reject = undefined;
 
         const errorHandler = handleArchiveError(reject);
 
