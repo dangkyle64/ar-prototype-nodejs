@@ -1,8 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { PassThrough } from 'stream';
 import archiver from 'archiver';
-
-import { createZipArchive } from '../../../../services/services_utils/zipImageDirectory.js';
+import { createZipArchive } from '../../../../services/services_utils/zipImageDirectoryHelpers/createZipArchive.js';
 import { handleArchiveError } from '../../../../services/services_utils/zipImageDirectoryHelpers/handleArchiveErrors.js';
 
 vi.mock('../../../../services/services_utils/zipImageDirectoryHelpers/handleArchiveErrors.js', () => ({

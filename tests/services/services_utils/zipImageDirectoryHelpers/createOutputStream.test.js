@@ -1,6 +1,5 @@
 import { describe, it, expect, vi } from 'vitest';
-import { createOutputStream } from "../../../../services/services_utils/zipImageDirectory";
-
+import { createOutputStream } from '../../../../services/services_utils/zipImageDirectoryHelpers/createOutputStream';
 import fs from 'fs';
 
 describe('createOutputStream', () => {

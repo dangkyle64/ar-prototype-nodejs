@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from 'vitest';
-import { handleOutputErrors } from '../../../../services/services_utils/zipImageDirectory';
+import { handleOutputErrors } from '../../../../services/services_utils/zipImageDirectoryHelpers/handleOutputErrors';
 
 describe('handleOutputErrors', () => {
     it('should call reject with a new error when an error is passed', () => {
