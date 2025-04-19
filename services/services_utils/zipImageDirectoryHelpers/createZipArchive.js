@@ -1,5 +1,5 @@
 import archiver from 'archiver';
-import { handleArchiveError } from './zipImageDirectoryHelpers/handleArchiveErrors.js';
+import { handleArchiveError } from './handleArchiveErrors.js';
 
 export const createZipArchive = (sourceDir, reject, output) => {
     const archive = archiver('zip', { zlib: { level: 9 } });

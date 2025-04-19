@@ -3,7 +3,7 @@ import path from 'path';
 import { uploadZippedDirectory } from './zipImageDirectoryHelpers/uploadZippedDirectory.js';
 import { createOutputStream } from './zipImageDirectoryHelpers/createOutputStream.js';
 import { handleOutputErrors } from './zipImageDirectoryHelpers/handleOutputErrors.js';
-import { createZipArchive } from './createZipArchive.js';
+import { createZipArchive } from './zipImageDirectoryHelpers/createZipArchive.js';
 
 export const zipImageDirectory = (sourceDir, outputPath) => {
     return new Promise((resolve, reject) => {
