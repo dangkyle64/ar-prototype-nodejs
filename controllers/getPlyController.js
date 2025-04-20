@@ -13,7 +13,6 @@ export const getPlyController = async (request, response) => {
         const result = await processZipFile(zipPlyBuffer);
 
         if (result.error) {
-            console.log('It failed.');
             return response.status(result.status).json({ error: result.error });
         };
 

@@ -53,16 +53,35 @@ describe('handleArchiveError', () => {
 
     it('should handle thrown errors inside reject', () => {
         const reject = vi.fn(() => {
-        throw new Error('Reject function failed!');
+            throw new Error('Reject function failed!');
         });
         const error = new Error('Test archiver error');
 
         const errorHandler = handleArchiveError(reject);
 
         try {
-        errorHandler(error);
+            errorHandler(error);
         } catch (err) {
-        expect(err.message).toBe('Reject function failed!');
-        }
+            expect(err.message).toBe('Reject function failed!');
+        };
+    });
+
+    it('should handle string as error input', () => {
+        const reject = vi.fn();
+        const errorHandler = handleArchiveError(reject);
+    
+        errorHandler('Something went wrong');
+    
+        expect(reject).toHaveBeenCalledWith(new Error('Archiver error: Unknown archiver error'));
+    });
+    
+    it('should fallback to default message for falsy non-string error.message', () => {
+        const reject = vi.fn();
+        const error = { message: null };
+    
+        const errorHandler = handleArchiveError(reject);
+        errorHandler(error);
+    
+        expect(reject).toHaveBeenCalledWith(new Error('Archiver error: Unknown archiver error'));
     });
 });

@@ -1,4 +1,5 @@
 import unzipper from 'unzipper';
+import { saveTempPlyFiles } from './services_utils/getPlyServiceHelpers/saveTempPlyFiles.js';
 
 export const processZipFile = async (buffer) => {
     try {
@@ -10,9 +11,11 @@ export const processZipFile = async (buffer) => {
             return { status: 400, error: 'Uploaded ZIP is empty '};
         };
 
-        directory.files.forEach(file => {
-            console.log(`Found file: ${file.path}`);
-        });
+        for (const fileEntry of directory.files) {
+            if (fileEntry.type === 'File') {
+                await saveTempPlyFiles(fileEntry);
+            };
+        };
 
         return { status: 200, message: 'ZIP processed successfully' };
     } catch(error) {

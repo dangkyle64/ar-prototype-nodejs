@@ -35,4 +35,35 @@ describe('createOutputStream', () => {
             new Error(`Failed to create write stream: ${fakeError.message}`)
         );
     });
+
+    it('should throw if reject is not a function', () => {
+        const fakeError = new Error('fail');
+        vi.spyOn(fs, 'createWriteStream').mockImplementation(() => {
+            throw fakeError;
+        });
+    
+        expect(() => createOutputStream('some/output.txt', null)).toThrow();
+    });
+    
+    it('should throw if reject itself throws an error', () => {
+        const fakeError = new Error('fail');
+        vi.spyOn(fs, 'createWriteStream').mockImplementation(() => {
+            throw fakeError;
+        });
+    
+        const brokenReject = () => { throw new Error('Reject failed') };
+    
+        expect(() => createOutputStream('some/output.txt', brokenReject)).toThrow('Reject failed');
+    });
+    
+    it('should reject when fs.createWriteStream throws a path error', () => {
+        const error = new Error('ENOENT: no such file or directory');
+        vi.spyOn(fs, 'createWriteStream').mockImplementation(() => { throw error });
+    
+        const result = createOutputStream('/invalid/path/file.txt', mockReject);
+        
+        expect(mockReject).toHaveBeenCalledWith(
+            new Error('Failed to create write stream: ENOENT: no such file or directory')
+        );
+    });
 });

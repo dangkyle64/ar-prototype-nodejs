@@ -1,8 +1,9 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { PassThrough } from 'stream';
 import archiver from 'archiver';
-import { createZipArchive } from '../../../../services/services_utils/createZipArchive.js';
+
 import { handleArchiveError } from '../../../../services/services_utils/zipImageDirectoryHelpers/handleArchiveErrors.js';
+import { createZipArchive } from '../../../../services/services_utils/zipImageDirectoryHelpers/createZipArchive.js';
 
 vi.mock('../../../../services/services_utils/zipImageDirectoryHelpers/handleArchiveErrors.js', () => ({
     handleArchiveError: vi.fn()
@@ -64,5 +65,39 @@ describe('createZipArchive', () => {
         onErrorCallback(fakeError);
 
         expect(mockErrorHandler).toHaveBeenCalledWith(fakeError);
+    });
+
+    it('should not call reject on successful archive creation', () => {
+        createZipArchive('/some/dir', rejectMock, outputStream);
+    
+        expect(rejectMock).not.toHaveBeenCalled();
+    });
+
+    it('should call reject if archiver throws during creation', () => {
+        archiver.mockImplementation(() => {
+            throw new Error('Archiver broke');
+        });
+    
+        createZipArchive('/some/dir', rejectMock, outputStream);
+    
+        expect(rejectMock).toHaveBeenCalledWith(expect.any(Error));
+        expect(rejectMock.mock.calls[0][0].message).toMatch(/Archiver broke/);
+    });
+    
+    it('should not call directory or finalize if archiver fails', () => {
+        archiver.mockImplementation(() => {
+            throw new Error('Archiver broke');
+        });
+    
+        createZipArchive('/some/dir', rejectMock, outputStream);
+    
+        expect(archiveMock.directory).not.toHaveBeenCalled();
+        expect(archiveMock.finalize).not.toHaveBeenCalled();
+    });
+    
+    it('should initialize archiver with correct compression settings', () => {
+        createZipArchive('/some/dir', rejectMock, outputStream);
+    
+        expect(archiver).toHaveBeenCalledWith('zip', { zlib: { level: 9 } });
     });
 });
