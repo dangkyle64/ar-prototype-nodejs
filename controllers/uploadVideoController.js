@@ -2,10 +2,14 @@ import { processVideo } from "../services/uploadVideoServices.js";
 
 export const uploadVideoController = async (request, response) => {
 
-    if (!request.file) {
+    if (request.files && request.files.length > 1) {
+        return response.status(400).json({ error: 'Only one video file is allowed' });
+    };
+
+    if (!request.file || !request.file.buffer || request.file.buffer.length === 0) {
         return response.status(400).json({ error: 'No video file uploaded' });
     };
-     
+    
     const allowedMimeTypes = ['video/mp4', 'video/webm'];
 
     if (!allowedMimeTypes.includes(request.file.mimetype)) {
