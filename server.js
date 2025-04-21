@@ -1,7 +1,12 @@
 import express from 'express';
 import cors from 'cors';
+import dotenv from 'dotenv';
+
 import uploadVideoRouter from './routers/uploadVideoRouter.js';
 import getPlyRouter from './routers/getPlyRouter.js';
+import getPlyFromS3Router from './routers/plyModelRouter.js';
+
+dotenv.config();
 
 const app = express();
 
@@ -30,9 +35,9 @@ app.use(express.static('public'));
 
 app.use('/api/video-upload', uploadVideoRouter);
 app.use('/api/ply-upload', getPlyRouter);
-
+app.use('/api', getPlyFromS3Router);
+  
 const port = process.env.PORT || 3000;
-
 
 app.listen(port, () => {
     console.log(`Server is running on http://localhost:${port}`);

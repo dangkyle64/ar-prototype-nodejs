@@ -3,8 +3,6 @@ import { processZipFile } from "../services/getPlyServices.js";
 export const getPlyController = async (request, response) => {
     try {
 
-        //console.log('Received request:', request.file);
-
         if (!request.file) {
             return response.status(400).json({ error: 'No file uploaded' });
         };

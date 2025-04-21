@@ -5,8 +5,6 @@ export const processZipFile = async (buffer) => {
     try {
         const directory = await unzipper.Open.buffer(buffer);
 
-        //console.log('ZIP contents:', directory.files);
-
         if (directory.files.length === 0) {
             return { status: 400, error: 'Uploaded ZIP is empty '};
         };
