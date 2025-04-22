@@ -6,11 +6,20 @@ export const processZipFile = async (buffer) => {
         const directory = await unzipper.Open.buffer(buffer);
 
         if (directory.files.length === 0) {
-            return { status: 400, error: 'Uploaded ZIP is empty '};
+            return { status: 400, error: 'Uploaded ZIP is empty' };
         };
 
         for (const fileEntry of directory.files) {
             if (fileEntry.type === 'File') {
+
+                if (fileEntry.type === 'File') {
+                    const fileExtension = fileEntry.path.split('.').pop();
+    
+                    if (fileExtension !== 'ply') {
+                        return { status: 400, error: 'Unsupported file type inside ZIP' };
+                    };
+                };
+
                 await saveTempPlyFiles(fileEntry);
             };
         };

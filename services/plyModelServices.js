@@ -2,7 +2,6 @@ import path from 'path';
 import fs from 'fs';
 import AWS from 'aws-sdk';
 import dotenv from 'dotenv';
-import PlyModel from '../models/plyModel.js';
 
 dotenv.config();
 
@@ -23,14 +22,16 @@ export const getPlyFileFromS3 = (fileName) => {
     return s3.getObject(params).createReadStream();
 };
 
-const uploadFile = async (fileName) => {
+const uploadFile = async () => {
 
-    const filePath = path.join('./ply', fileName);
+    const filePath = path.join('./ply', 'fused.ply');
     const fileBuffer = fs.readFileSync(filePath);
+
+    const uniqueFileName = `${Date.now()}_fused.ply`;
 
     const params = {
         Bucket: process.env.R2_BUCKET,
-        Key: fileName,
+        Key: uniqueFileName,
         Body: fileBuffer,
         ContentType: 'application/octet-stream',
     };
