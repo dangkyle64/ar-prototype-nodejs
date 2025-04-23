@@ -1,9 +1,11 @@
 import { describe, it, expect, vi } from 'vitest';
-import { streamPlyFileFromS3 } from '../../controllers/plyModelController';
-import { getPlyFileFromS3 } from '../../services/plyModelServices';
+import { streamPlyFileFromS3 } from '../../controllers/plyModelController.js';
+import { getPlyFileFromS3 } from '../../services/plyModelServices.js';
 import { Readable } from 'stream';
 
-vi.mock('../../services/plyModelServices');
+vi.mock('../../services/plyModelServices.js', () => ({
+    getPlyFileFromS3: vi.fn(),
+}));
 
 describe('plyModelController', () => {
     it('should stream the PLY file when found', () => {

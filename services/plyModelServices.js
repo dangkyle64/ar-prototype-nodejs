@@ -1,26 +1,31 @@
 import path from 'path';
 import fs from 'fs';
-import AWS from 'aws-sdk';
 import dotenv from 'dotenv';
 import PlyModel from '../models/plyModel.js';
+import S3 from '../awsS3Setup.js';
 
 dotenv.config();
 
-const s3 = new AWS.S3({
-    endpoint: process.env.DEFAULT,
-    accessKeyId: process.env.ACCESS_CLOUD,
-    secretAccessKey: process.env.SECRET_ACCESS_CLOUD,
-    region: 'auto',
-    signatureVersion: 'v4',
-});
-
 export const getPlyFileFromS3 = (fileName) => {
+
+    if (!fileName || typeof fileName !== 'string') {
+        throw new Error('Invalid or missing fileName');
+    };
+
+    if (!fileName.endsWith('.ply')) {
+        throw new Error('Invalid file type');
+    }
+    
+    if (!process.env.R2_BUCKET) {
+        throw new Error('S3 bucket not configured');
+    };
+    
     const params = {
         Bucket: process.env.R2_BUCKET,
         Key: fileName,
     };
 
-    return s3.getObject(params).createReadStream();
+    return S3.getObject(params).createReadStream();
 };
 
 const uploadFile = async () => {
@@ -38,8 +43,8 @@ const uploadFile = async () => {
     };
         
     try {
-        //const data = await s3.upload(params).promise();
-        //console.log('Upload successful:', data);
+        const data = await S3.upload(params).promise();
+        console.log('Upload successful:', data);
 
         await PlyModel.create({
             name: uniqueFileName,
@@ -51,5 +56,3 @@ const uploadFile = async () => {
         console.error('Upload failed:', err);
     };
 };
-
-uploadFile();
