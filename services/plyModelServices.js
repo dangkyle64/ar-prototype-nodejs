@@ -2,6 +2,7 @@ import path from 'path';
 import fs from 'fs';
 import AWS from 'aws-sdk';
 import dotenv from 'dotenv';
+import PlyModel from '../models/plyModel.js';
 
 dotenv.config();
 
@@ -35,11 +36,20 @@ const uploadFile = async () => {
         Body: fileBuffer,
         ContentType: 'application/octet-stream',
     };
-    
+        
     try {
-        const data = await s3.upload(params).promise();
-        console.log('Upload successful:', data);
+        //const data = await s3.upload(params).promise();
+        //console.log('Upload successful:', data);
+
+        await PlyModel.create({
+            name: uniqueFileName,
+        });
+
+        console.log('Saved the uniqueName in the DB');
+
     } catch (err) {
         console.error('Upload failed:', err);
     };
 };
+
+uploadFile();
