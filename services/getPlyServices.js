@@ -28,7 +28,7 @@ export const processZipFile = async (buffer) => {
 
         await saveTempPlyFiles(plyFile);
 
-        //await uploadFile();
+        await uploadFile();
 
         return { status: 200, message: 'ZIP processed successfully' };
     } catch(error) {
