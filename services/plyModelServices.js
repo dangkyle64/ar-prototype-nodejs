@@ -28,7 +28,7 @@ export const getPlyFileFromS3 = (fileName) => {
     return S3.getObject(params).createReadStream();
 };
 
-const uploadFile = async () => {
+export const uploadFile = async () => {
 
     const filePath = path.join('./ply', 'fused.ply');
     const fileBuffer = fs.readFileSync(filePath);

@@ -1,4 +1,10 @@
+// Comment here so the imports don't get above the mock
+vi.mock('../../services/plyModelServices.js', () => ({
+    uploadFile: vi.fn()
+}));
+
 import unzipper from 'unzipper';
+import { describe, it, expect, vi } from 'vitest';
 import { processZipFile } from '../../services/getPlyServices.js';
 import { saveTempPlyFiles } from '../../services/services_utils/getPlyServiceHelpers/saveTempPlyFiles.js';
 

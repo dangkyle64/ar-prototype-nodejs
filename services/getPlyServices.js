@@ -1,5 +1,6 @@
 import unzipper from 'unzipper';
 import { saveTempPlyFiles } from './services_utils/getPlyServiceHelpers/saveTempPlyFiles.js';
+import { uploadFile } from './plyModelServices.js';
 
 export const processZipFile = async (buffer) => {
     try {
@@ -9,20 +10,25 @@ export const processZipFile = async (buffer) => {
             return { status: 400, error: 'Uploaded ZIP is empty' };
         };
 
-        for (const fileEntry of directory.files) {
-            if (fileEntry.type === 'File') {
+        const files = directory.files.filter(file => file.type === 'File');
 
-                if (fileEntry.type === 'File') {
-                    const fileExtension = fileEntry.path.split('.').pop();
-    
-                    if (fileExtension !== 'ply') {
-                        return { status: 400, error: 'Unsupported file type inside ZIP' };
-                    };
-                };
-
-                await saveTempPlyFiles(fileEntry);
-            };
+        if (files.length !== 1) {
+            return { status: 400, error: 'Unsupported file type inside ZIP' };
         };
+
+        const onlyFile = files[0];
+
+        if (!onlyFile.path.endsWith('.ply')) {
+            return { status: 400, error: 'Unsupported file type inside ZIP' };
+        };
+
+        const plyFile = directory.files.find(
+            (file) => file.type === 'File' && file.path.endsWith('.ply')
+        );
+
+        await saveTempPlyFiles(plyFile);
+
+        //await uploadFile();
 
         return { status: 200, message: 'ZIP processed successfully' };
     } catch(error) {

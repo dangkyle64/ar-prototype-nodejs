@@ -1,9 +1,11 @@
+//Mock first with this comment to stop the imports from being pushed to the top
+vi.mock('../../services/getPlyServices.js', () => ({
+    processZipFile: vi.fn()
+}));
+
 import { describe, it, expect, vi } from 'vitest';
 import { getPlyController } from '../../controllers/getPlyController.js';
 import * as getPlyServices from '../../services/getPlyServices.js'; 
-
-
-vi.mock('../../services/getPlyServices.js');
 
 describe('getPlyController', () => {
     it('should return error message `No file uploaded` when no file is provided', async () => {
