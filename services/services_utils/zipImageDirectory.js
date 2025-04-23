@@ -21,9 +21,10 @@ export const zipImageDirectory = (sourceDir, outputPath) => {
 
         output.on('close', () => {
 
-            const apiUrl = 'https://7d52-172-88-117-116.ngrok-free.app/colmap-api'; // TEMPORARY
+            const apiUrl = 'https://f943-172-88-117-116.ngrok-free.app/colmap-api'; // TEMPORARY
 
             console.log(`ZIP complete.`);
+            console.log(`Uploading file: ${outputPath}`);
             uploadZippedDirectory(outputPath, apiUrl)
             .then((res) => {
                 resolve(res);
