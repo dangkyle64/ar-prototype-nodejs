@@ -6,6 +6,11 @@ export const processZipFile = async (buffer) => {
     try {
         const directory = await unzipper.Open.buffer(buffer);
 
+        console.log('[Debug] Files in ZIP:');
+        directory.files.forEach(file => {
+            console.log(` - ${file.path} (${file.type})`);
+        });
+        
         if (directory.files.length === 0) {
             return { status: 400, error: 'Uploaded ZIP is empty' };
         };
