@@ -26,3 +26,21 @@ export const streamPlyFileFromS3 = (request, response) => {
         };
     };
 };
+
+export const getAllPlyFilesFromS3 = (request, response) => {
+    try {
+        // call s3 function here to get all filenames
+        // listObject command is used here, will be in services then called here
+        const filenames = []; 
+        response.status(200).json(filenames);
+    } catch(error) {
+        console.error(error);
+
+        const message = error.message || '';
+        if (message.includes('not found')) {
+            response.status(404).json({ error: 'Files not found' });
+        } else {
+            response.status(500).json({ error: 'Internal server error' });
+        };
+    };
+};
