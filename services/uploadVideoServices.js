@@ -48,7 +48,7 @@ export const processVideo = async (buffer, mimetype) => {
             { frameStep: 15},
         );
 
-        console.log(path.resolve('./frames_output'));
+        console.log(path.resolve('./zipped_frames/frames.zip'));
         await zipImageDirectory(
             path.resolve('./frames_output'),
             path.resolve('./zipped_frames/frames.zip')

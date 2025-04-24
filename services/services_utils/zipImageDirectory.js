@@ -1,9 +1,12 @@
 import fs from 'fs';
 import path from 'path';
+import dotenv from 'dotenv';
 import { uploadZippedDirectory } from './zipImageDirectoryHelpers/uploadZippedDirectory.js';
 import { createOutputStream } from './zipImageDirectoryHelpers/createOutputStream.js';
 import { handleOutputErrors } from './zipImageDirectoryHelpers/handleOutputErrors.js';
 import { createZipArchive } from './zipImageDirectoryHelpers/createZipArchive.js';
+
+dotenv.config();
 
 export const zipImageDirectory = (sourceDir, outputPath) => {
     return new Promise((resolve, reject) => {
@@ -21,7 +24,7 @@ export const zipImageDirectory = (sourceDir, outputPath) => {
 
         output.on('close', () => {
 
-            const apiUrl = 'https://8efc-172-88-117-116.ngrok-free.app/colmap-api'; // TEMPORARY
+            const apiUrl = `${process.env.API_ENDPOINT}/colmap-api`; 
 
             console.log(`ZIP complete.`);
             console.log(`Uploading file: ${outputPath}`);

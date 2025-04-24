@@ -43,8 +43,8 @@ export const uploadFile = async () => {
     };
         
     try {
-        const data = await S3.upload(params).promise();
-        console.log('Upload successful:', data);
+        //const data = await S3.upload(params).promise();
+        //console.log('Upload successful:', data);
 
         await PlyModel.create({
             name: uniqueFileName,
