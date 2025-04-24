@@ -4,7 +4,6 @@ vi.mock('../../../services/plyModelServices.js', () => ({
 }));
 
 import { describe, it, expect, vi } from 'vitest';
-
 import * as plyModelServices from '../../../services/plyModelServices.js';
 import { getAllPlyFilesFromS3 } from '../../../controllers/plyModelController.js';
 
