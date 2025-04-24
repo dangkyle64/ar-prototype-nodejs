@@ -28,6 +28,36 @@ export const getPlyFileFromS3 = (fileName) => {
     return S3.getObject(params).createReadStream();
 };
 
+export const getAllPlyFileKeys = async () => {
+    const params = {
+        Bucket: process.env.R2_BUCKET,
+    };
+
+    try {
+        const response = await S3.listObjectsV2(params).promise();
+
+        if (response.IsTruncated) {
+            console.log('Results truncated — pagination not implemented yet.');
+        };
+        
+        const keys = [];
+
+        if (response.Contents) {
+            for (let obj of response.Contents) {
+                if (obj.Key) {
+                    keys.push(obj.Key);
+                };
+            };
+        };
+
+        console.log("Keys found are: ", keys);
+        return keys;
+    } catch (err) {
+        console.error("Error fetching S3 keys:", err);
+        throw err;
+    }
+};
+
 export const uploadFile = async () => {
 
     const filePath = path.join('./ply', 'fused.ply');

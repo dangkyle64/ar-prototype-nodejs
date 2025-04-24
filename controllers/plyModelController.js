@@ -1,4 +1,4 @@
-import { getPlyFileFromS3 } from "../services/plyModelServices.js";
+import { getAllPlyFileKeys, getPlyFileFromS3 } from "../services/plyModelServices.js";
 
 export const streamPlyFileFromS3 = (request, response) => {
     const { filename } = request.params;
@@ -27,12 +27,17 @@ export const streamPlyFileFromS3 = (request, response) => {
     };
 };
 
-export const getAllPlyFilesFromS3 = (request, response) => {
+export const getAllPlyFilesFromS3 = async (request, response) => {
     try {
-        // call s3 function here to get all filenames
-        // listObject command is used here, will be in services then called here
-        const filenames = []; 
-        response.status(200).json(filenames);
+        const fileKeys = await getAllPlyFileKeys();
+
+        if (!Array.isArray(fileKeys)) {
+            throw new Error('Malformed response: Missing "Contents" field');
+        };
+
+        const validKeys = fileKeys.filter(key => key != null);
+
+        response.status(200).json(validKeys);
     } catch(error) {
         console.error(error);
 
@@ -40,7 +45,7 @@ export const getAllPlyFilesFromS3 = (request, response) => {
         if (message.includes('not found')) {
             response.status(404).json({ error: 'Files not found' });
         } else {
-            response.status(500).json({ error: 'Internal server error' });
+            response.status(500).json({ data: [], error: 'Internal server error' });
         };
     };
 };
