@@ -32,7 +32,7 @@ export const streamPlyFileFromS3 = (request, response) => {
 
 export const getAllPlyFilesFromS3 = async (request, response) => {
     try {
-        const fileKeys = await getAllPlyFileKeys();
+        const fileKeys = await getAllPlyFileKeys(process.env.R2_BUCKET);
 
         if (!Array.isArray(fileKeys)) {
             throw new Error('Malformed response: Missing "Contents" field');

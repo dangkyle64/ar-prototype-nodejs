@@ -49,10 +49,14 @@ export const getPlyFileFromS3 = (fileName, R2_BUCKET) => {
     };
 };
 
-// didnt check for if process.env.R2_BUCKET was valid first 
-export const getAllPlyFileKeys = async () => {
+export const getAllPlyFileKeys = async (R2_BUCKET) => {
+    
+    if (!R2_BUCKET || typeof R2_BUCKET !== 'string') {
+        throw new Error('S3 bucket not configured');
+    };
+    
     const params = {
-        Bucket: process.env.R2_BUCKET,
+        Bucket: R2_BUCKET,
     };
 
     try {
@@ -66,7 +70,7 @@ export const getAllPlyFileKeys = async () => {
 
         if (response.Contents) {
             for (let obj of response.Contents) {
-                if (obj.Key) {
+                if (obj && typeof obj.Key === 'string' && obj.Key.length > 0) {
                     keys.push(obj.Key);
                 };
             };

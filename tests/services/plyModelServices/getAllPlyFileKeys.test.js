@@ -11,7 +11,9 @@ import S3 from '../../../awsS3Setup.js';
 
 
 describe('getAllPlyFileKeys', () => {
+    let R2_BUCKET;
     beforeEach(() => {
+        R2_BUCKET = 'mock-bucket';
         vi.clearAllMocks();
     });
 
@@ -28,7 +30,7 @@ describe('getAllPlyFileKeys', () => {
             })
         });
 
-        const result = await getAllPlyFileKeys();
+        const result = await getAllPlyFileKeys(R2_BUCKET);
         expect(result).toEqual(mockKeys.map(obj => obj.Key));
         expect(S3.listObjectsV2).toHaveBeenCalledTimes(1);
     });
@@ -40,7 +42,7 @@ describe('getAllPlyFileKeys', () => {
             })
         });
 
-        const result = await getAllPlyFileKeys();
+        const result = await getAllPlyFileKeys(R2_BUCKET);
         expect(result).toEqual([]);
     });
 
@@ -49,7 +51,7 @@ describe('getAllPlyFileKeys', () => {
             promise: vi.fn().mockRejectedValue(new Error('S3 failure'))
         });
 
-        await expect(getAllPlyFileKeys()).rejects.toThrow('S3 failure');
+        await expect(getAllPlyFileKeys(R2_BUCKET)).rejects.toThrow('S3 failure');
     });
 
     it('should return an empty array if Contents is undefined', async () => {
@@ -57,14 +59,14 @@ describe('getAllPlyFileKeys', () => {
             promise: vi.fn().mockResolvedValue({})
         });
     
-        const result = await getAllPlyFileKeys();
+        const result = await getAllPlyFileKeys(R2_BUCKET);
         expect(result).toEqual([]);
     });
 
     it('should skip entries without a Key', async () => {
         const mockKeys = [
             { Key: 'model1.ply' },
-            { Size: 1234 }, // No Key!
+            { Size: 1234 },
             { Key: 'model2.ply' }
         ];
     
@@ -72,7 +74,7 @@ describe('getAllPlyFileKeys', () => {
             promise: vi.fn().mockResolvedValue({ Contents: mockKeys })
         });
     
-        const result = await getAllPlyFileKeys();
+        const result = await getAllPlyFileKeys(R2_BUCKET);
         expect(result).toEqual(['model1.ply', 'model2.ply']);
     });
     
@@ -86,7 +88,7 @@ describe('getAllPlyFileKeys', () => {
             })
         });
     
-        const result = await getAllPlyFileKeys();
+        const result = await getAllPlyFileKeys(R2_BUCKET);
         expect(result).toEqual(['model1.ply']);
         expect(mockConsole).toHaveBeenCalledWith(expect.stringContaining('Results truncated'));
     
@@ -99,7 +101,47 @@ describe('getAllPlyFileKeys', () => {
     
         await expect(getAllPlyFileKeys()).rejects.toThrow();
     
-        process.env.R2_BUCKET = originalBucket; // restore
+        process.env.R2_BUCKET = originalBucket;
     });
     
+    it('should throw if bucket name is not a string', async () => {
+        await expect(getAllPlyFileKeys(123)).rejects.toThrow('S3 bucket not configured');
+        await expect(getAllPlyFileKeys({})).rejects.toThrow('S3 bucket not configured');
+    });
+    
+    it('should handle malformed Contents entries gracefully', async () => {
+        const malformedKeys = [
+            null,
+            { key: 'wrong-case-key' },
+            {},
+            { Key: null },
+            { Key: '' }
+        ];
+    
+        S3.listObjectsV2.mockReturnValueOnce({
+            promise: vi.fn().mockResolvedValue({ Contents: malformedKeys })
+        });
+    
+        const result = await getAllPlyFileKeys(R2_BUCKET);
+        expect(result).toEqual([]);
+    });
+    
+    it('should throw on unexpected SDK error (e.g., timeout)', async () => {
+        S3.listObjectsV2.mockReturnValueOnce({
+            promise: vi.fn().mockRejectedValue(new Error('RequestTimeout'))
+        });
+    
+        await expect(getAllPlyFileKeys(R2_BUCKET)).rejects.toThrow('RequestTimeout');
+    });
+    
+    it('should throw on AccessDenied error from S3', async () => {
+        const accessDeniedError = new Error('AccessDenied');
+        accessDeniedError.code = 'AccessDenied';
+    
+        S3.listObjectsV2.mockReturnValueOnce({
+            promise: vi.fn().mockRejectedValue(accessDeniedError)
+        });
+    
+        await expect(getAllPlyFileKeys(R2_BUCKET)).rejects.toThrow('AccessDenied');
+    });
 });
