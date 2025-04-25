@@ -13,7 +13,7 @@ export const getPlyController = async (request, response) => {
         if (result.error) {
             return response.status(result.status).json({ error: result.error });
         };
-
+        
         return response.status(result.status).json({ message: result.message });
     } catch(error) {
         console.log(error);

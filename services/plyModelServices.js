@@ -91,6 +91,10 @@ export const uploadFile = async () => {
 
     const uniqueFileName = `${Date.now()}_fused.ply`;
 
+    if (!process.env.R2_BUCKET) {
+        throw new Error('Missing S3 bucket in environment');
+    };
+
     const params = {
         Bucket: process.env.R2_BUCKET,
         Key: uniqueFileName,
@@ -99,8 +103,8 @@ export const uploadFile = async () => {
     };
         
     try {
-        //const data = await S3.upload(params).promise();
-        //console.log('Upload successful:', data);
+        const data = await S3.upload(params).promise();
+        console.log('Upload successful:', data);
 
         await PlyModel.create({
             name: uniqueFileName,
