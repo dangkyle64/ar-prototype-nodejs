@@ -6,7 +6,7 @@ import S3 from '../awsS3Setup.js';
 
 dotenv.config();
 
-export const getPlyFileFromS3 = (fileName) => {
+export const getPlyFileFromS3 = (fileName, R2_BUCKET) => {
 
     if (!fileName || typeof fileName !== 'string') {
         throw new Error('Invalid or missing fileName');
@@ -16,18 +16,40 @@ export const getPlyFileFromS3 = (fileName) => {
         throw new Error('Invalid file type');
     }
     
-    if (!process.env.R2_BUCKET) {
+    const baseName = fileName.replace(/\.ply$/, '');
+    if (baseName.length > 20) {
+        throw new Error('Filename is too long');
+    };
+
+    if (!R2_BUCKET) {
         throw new Error('S3 bucket not configured');
     };
-    
-    const params = {
-        Bucket: process.env.R2_BUCKET,
-        Key: fileName,
+
+    if (fileName.includes('/') || fileName.includes('..') || fileName.includes(' ')) {
+        throw new Error('Invalid file name');
     };
 
-    return S3.getObject(params).createReadStream();
+    try {
+        const params = {
+            Bucket: R2_BUCKET,
+            Key: fileName,
+        };
+
+        const plyFile = S3.getObject(params);
+        if (!plyFile || typeof plyFile.createReadStream !== 'function') {
+            throw new Error('Malformed S3 response');
+        };
+
+        return plyFile.createReadStream();
+    } catch(error) {
+        if (error.code === 'NoSuchKey') {
+            throw new Error('File not found in S3');
+        }
+        throw error;
+    };
 };
 
+// didnt check for if process.env.R2_BUCKET was valid first 
 export const getAllPlyFileKeys = async () => {
     const params = {
         Bucket: process.env.R2_BUCKET,

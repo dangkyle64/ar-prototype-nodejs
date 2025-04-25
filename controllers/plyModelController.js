@@ -1,4 +1,7 @@
 import { getAllPlyFileKeys, getPlyFileFromS3 } from "../services/plyModelServices.js";
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 export const streamPlyFileFromS3 = (request, response) => {
     const { filename } = request.params;
@@ -12,7 +15,7 @@ export const streamPlyFileFromS3 = (request, response) => {
     };
     
     try {
-        const stream = getPlyFileFromS3(filename);
+        const stream = getPlyFileFromS3(filename, process.env.R2_BUCKET);
         response.setHeader('Content-Type', 'application/octet-stream');
         stream.pipe(response);
     } catch(error) {
